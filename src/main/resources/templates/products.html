@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+    <title>Homework 3</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0-1/css/bootstrap.min.css}"/>
+</head>
+<body>
+<script th:src="@{/webjars/bootstrap/4.6.0-1/js/bootstrap.bundle.min.js}"></script>
+<div>
+    <h1>Продукты</h1>
+    <table th:border="1" class="table">
+        <tr>
+            <th>ID</th>
+            <th>Наименование</th>
+            <th>Цена</th>
+            <th>Производитель</th>
+        </tr>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.title}"></td>
+            <td th:text="${product.cost}"></td>
+            <td th:text="${product.producer}"></td>
+        </tr>
+    </table>
+    <br>
+    <a href="product_add">Добавить продукт</a>
+</div>
+</body>
+</html>
