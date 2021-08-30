@@ -33,7 +33,7 @@ public class ProductController {
     public String addProduct(Model model) {
         model.addAttribute("mode", "Добавить продукт");
         model.addAttribute("product");
-        return "productEditForm";
+        return "productAddForm";
     }
     @PostMapping("product_add")
     public String saveProduct(@ModelAttribute @Valid Product product) {
