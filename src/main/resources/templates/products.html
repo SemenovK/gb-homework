@@ -15,12 +15,14 @@
             <th>Наименование</th>
             <th>Цена</th>
             <th>Производитель</th>
+            <th></th>
         </tr>
         <tr th:each="product : ${products}">
-            <td th:text="${product.id}"></td>
-            <td th:text="${product.title}"></td>
+            <td><a href="#" th:href="'product_edit/'+${product.productId}" th:text="${product.productId}">...</a></td>
+            <td><a href="#" th:href="'product_edit/'+${product.productId}" th:text="${product.title}">...</a></td>
             <td th:text="${product.cost}"></td>
             <td th:text="${product.producer}"></td>
+            <td><a href="#" th:href="'product_delete/'+${product.productId}">Удалить</a></td>
         </tr>
     </table>
     <br>

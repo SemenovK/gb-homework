@@ -1,11 +1,11 @@
-package gb.spring.homework4.service;
+package gb.spring.homework5.service;
 
-import gb.spring.homework4.model.Product;
-import gb.spring.homework4.repository.ProductRepository;
-import lombok.AllArgsConstructor;
+import gb.spring.homework5.model.Product;
+import gb.spring.homework5.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Service
@@ -18,8 +18,8 @@ public class ProductService {
         return productRepository.getProductsList();
     }
 
-    public Product getProduct(long id) {
-        return productRepository.getProduct(id).orElseThrow();
+    public List<Product> getProduct(BigInteger id) {
+        return productRepository.getProduct(id);
     }
 
     public void addProduct(Product product) {
@@ -28,6 +28,10 @@ public class ProductService {
 
     public void replaceProduct(Product product) {
         productRepository.replaceProduct(product);
+    }
+
+    public void deleteProduct(BigInteger id) {
+        productRepository.deleteProduct(id);
     }
 
 }

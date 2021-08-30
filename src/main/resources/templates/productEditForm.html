@@ -7,23 +7,25 @@
 </head>
 <body>
 <script th:src="@{/webjars/bootstrap/4.6.0-1/js/bootstrap.bundle.min.js}"></script>
+
+
+<h1 th:text="${mode}"></h1>
 <div>
-    <h1 th:text="${mode}"></h1>
+    <form action="#" th:action="@{/product_edit}" method="post" th:object="${product}">
 
-    <form action="#" th:action="@{/product_add}" method="post" th:object="${product}">
         <div class="mb-3">
-           <!-- <input type="hidden" value="" th:value="${product.id}" id="id" name="id">-->
 
+            <input name="productId" id="productId" type="hidden" th:value="${product.productId}">
             <label class="form-label">Наименование</label>
-            <input type="text" class="form-control" id="title" name="title"/>
+            <input type="text" class="form-control" id="title" th:value="${product.title}" name="title"/>
         </div>
         <div class="mb-3">
             <label class="form-label">Цена</label>
-            <input type="text" class="form-control" id="cost" name="cost"/>
+            <input type="text" class="form-control" id="cost" th:value="${product.cost}" name="cost"/>
         </div>
         <div class="mb-3">
             <label class="form-label">Производитель</label>
-            <input type="text" class="form-control" id="producer" name="producer"/>
+            <input type="text" class="form-control" id="producer" th:value="${product.producer}" name="producer"/>
         </div>
 
         <div class="mb-3">

@@ -1,13 +1,14 @@
-package gb.spring.homework4.controller;
+package gb.spring.homework5.controller;
 
-import gb.spring.homework4.model.Product;
-import gb.spring.homework4.service.ProductService;
+import gb.spring.homework5.model.Product;
+import gb.spring.homework5.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigInteger;
 
 @Controller
 @RequestMapping
@@ -23,7 +24,7 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public String findProduct(@PathVariable Long id, Model model) {
+    public String findProduct(@PathVariable BigInteger id, Model model) {
         model.addAttribute("products", productService.getProduct(id));
         return "products";
     }
@@ -40,5 +41,21 @@ public class ProductController {
         return "redirect:/";
     }
 
+    @GetMapping("product_edit/{id}")
+    public String editProduct(@PathVariable BigInteger id,Model model) {
+        model.addAttribute("mode", "Редактировать продукт");
+        model.addAttribute("product",(Product)productService.getProduct(id).stream().findFirst().get());
+        return "productEditForm";
+    }
+    @PostMapping("product_edit")
+    public String editProduct(@ModelAttribute @Valid Product product) {
+        productService.replaceProduct(product);
+        return "redirect:/";
+    }
 
+    @GetMapping("product_delete/{id}")
+    public String deleteProduct(@PathVariable BigInteger id) {
+        productService.deleteProduct(id);
+        return "redirect:/";
+    }
 }
