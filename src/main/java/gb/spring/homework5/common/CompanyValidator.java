@@ -24,8 +24,7 @@ public class CompanyValidator implements ConstraintValidator<Company, String> {
     @Override
     public void initialize(Company constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        log.info("Validator init");
-        log.info(this.companyService);
+
     }
 
     @Override

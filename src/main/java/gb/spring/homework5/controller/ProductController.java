@@ -1,5 +1,6 @@
 package gb.spring.homework5.controller;
 
+import gb.spring.homework5.model.Customer;
 import gb.spring.homework5.model.Product;
 import gb.spring.homework5.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class ProductController {
     @GetMapping("product_edit/{id}")
     public String editProduct(@PathVariable BigInteger id,Model model) {
         model.addAttribute("mode", "Редактировать продукт");
-        model.addAttribute("product",(Product)productService.getProduct(id).stream().findFirst().get());
+        model.addAttribute("product", productService.getProduct(id));
         return "productEditForm";
     }
     @PostMapping("product_edit")
@@ -57,5 +58,19 @@ public class ProductController {
     public String deleteProduct(@PathVariable BigInteger id) {
         productService.deleteProduct(id);
         return "redirect:/";
+    }
+
+    @GetMapping("product_byCustomerId/{id}")
+    public String showProductsByCustomerId(@PathVariable BigInteger id, Model model) {
+        model.addAttribute("products",  productService.getProductsListByCustomerId(id));
+
+        return "products";
+    }
+    @GetMapping("product_byCustomerName")
+    public String showProductsByCustomerId(@RequestParam(name = "name") String customerName,
+                                           Model model) {
+        model.addAttribute("products",  productService.getProductsListByCustomerName(customerName));
+        return "products";
+
     }
 }

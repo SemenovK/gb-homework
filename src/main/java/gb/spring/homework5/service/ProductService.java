@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class ProductService {
         return productRepository.getProductsList();
     }
 
-    public List<Product> getProduct(BigInteger id) {
+    public Product getProduct(BigInteger id) {
         return productRepository.getProduct(id);
     }
 
@@ -34,4 +35,11 @@ public class ProductService {
         productRepository.deleteProduct(id);
     }
 
+    public Set<Product> getProductsListByCustomerId(BigInteger id) {
+        return productRepository.getProductsListByCustomerId(id);
+    }
+
+    public Set<Product> getProductsListByCustomerName(String customerName) {
+        return productRepository.getProductsListByCustomerName(customerName);
+    }
 }

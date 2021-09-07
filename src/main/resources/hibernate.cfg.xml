@@ -19,5 +19,8 @@
 
         <mapping class="gb.spring.homework5.model.Product"/>
         <mapping class="gb.spring.homework5.model.Company"/>
+        <mapping class="gb.spring.homework5.model.Order"/>
+        <mapping class="gb.spring.homework5.model.OrderDetail"/>
+        <mapping class="gb.spring.homework5.model.Customer"/>
     </session-factory>
 </hibernate-configuration>

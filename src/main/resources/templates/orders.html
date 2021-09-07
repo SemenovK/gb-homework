@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+    <title>Homework 3</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0-1/css/bootstrap.min.css}"/>
+</head>
+<body>
+<script th:src="@{/webjars/bootstrap/4.6.0-1/js/bootstrap.bundle.min.js}"></script>
+<div>
+
+    <h1>История заказов покупателя</h1>
+    <h2 th:text="${customer.name}"></h2>
+    <table th:border="1" class="table">
+        <tr>
+            <th>ID заказа</th>
+            <th>Дата</th>
+            <th>Cостав заказа</th>
+        </tr>
+        <tr th:each="item : ${order}">
+            <td th:text="${item.order_id}">...</td>
+            <td th:text="${item.date}">...</td>
+            <td>
+                <div th:each="detail : ${item.orderDetailList}">
+                    <span th:text="${detail.product.title}"></span>
+                    <span th:text="${detail.price_on_order_date}"></span>
+                    <span th:text="${detail.quantity}"></span>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+    <br>
+    <a th:href="'/customers'">К покупателям</a>
+
+</div>
+</body>
+</html>

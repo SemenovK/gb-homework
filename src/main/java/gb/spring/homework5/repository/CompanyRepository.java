@@ -1,8 +1,8 @@
 package gb.spring.homework5.repository;
 
 import gb.spring.homework5.model.Company;
-import gb.spring.homework5.service.DBConnectionService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,13 +11,15 @@ import org.springframework.stereotype.Repository;
 
 @Log4j2
 @Repository
-public class CompanyDictionary {
-    SessionFactory factory;
+public class CompanyRepository {
+
+    private SessionFactory factory;
 
     @Autowired
-    public void setDBConnectionService(DBConnectionService dbConnectionService) {
-        factory = dbConnectionService.getFactory();
+    public CompanyRepository(SessionFactory factory) {
+        this.factory = factory;
     }
+
 
     public boolean checkCompanyByName(String companyName) {
         Boolean result = false;

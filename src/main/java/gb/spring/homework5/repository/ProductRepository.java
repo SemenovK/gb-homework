@@ -1,8 +1,11 @@
 package gb.spring.homework5.repository;
 
+import gb.spring.homework5.controller.CustomerController;
+import gb.spring.homework5.model.Customer;
+import gb.spring.homework5.model.Order;
+import gb.spring.homework5.model.OrderDetail;
 import gb.spring.homework5.model.Product;
-import gb.spring.homework5.service.DBConnectionService;
-import lombok.extern.java.Log;
+import gb.spring.homework5.utils.QueryUtil;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,19 +13,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Repository
 public class ProductRepository {
 
     private SessionFactory factory;
+    private OrdersRepository ordersRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    public void setDbConnectionService(DBConnectionService dbConnectionService) {
-        factory = dbConnectionService.getFactory();
+    public void setFactory(SessionFactory factory) {
+        this.factory = factory;
+    }
+
+    @Autowired
+    public void setOrdersRepository(OrdersRepository ordersRepository) {
+        this.ordersRepository = ordersRepository;
+    }
+    @Autowired
+    public void setCustomerRepository(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     public void addProduct(Product product) {
@@ -51,22 +68,10 @@ public class ProductRepository {
         return productList;
     }
 
-    public List<Product> getProduct(BigInteger id) {
+    public Product getProduct(BigInteger id) {
 
-        List<Product> result;
-        try (Session session = factory.getCurrentSession()) {
-            session.beginTransaction();
-            //Здесь почемуто когда хотел получить всего лишь одну запись через getSingleResult  вылетала
-            //java.lang.ClassCastException: class gb.spring.homework5.model.Product cannot be cast to class gb.spring.homework5.model.Product
-            //хотя возвращалась одна запись - поэтому переписал на List
-            result = session.createNamedQuery("Product.getById", Product.class)
-                    .setParameter("id", id)
-                    .getResultList();
-
-            session.getTransaction().commit();
-
-        }
-        return result;
+        QueryUtil<Product, BigInteger> queryUtil = new QueryUtil<>();
+        return queryUtil.getSingleResultById(factory, Product.class, id);
     }
 
     public void deleteProduct(BigInteger id) {
@@ -101,4 +106,21 @@ public class ProductRepository {
 
     }
 
+    public Set<Product> getProductsListByCustomerId(BigInteger id) {
+        Set<Product> productSet = new CopyOnWriteArraySet<>();
+        List<Order> orderList =ordersRepository.getCustomerOrders(id);
+        for (Order order : orderList) {
+            List<OrderDetail> orderDetailList = ordersRepository.getOrderDetails(order);
+            for (OrderDetail detail : orderDetailList) {
+                productSet.add(detail.getProduct());
+            }
+        }
+        return productSet;
+    }
+
+    public Set<Product> getProductsListByCustomerName(String customerName) {
+        Set<Product> productSet = new CopyOnWriteArraySet<>();
+        productSet = getProductsListByCustomerId(customerRepository.getCustomer(customerName).getCustomerId());
+        return productSet;
+    }
 }
