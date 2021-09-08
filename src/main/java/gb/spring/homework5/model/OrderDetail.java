@@ -6,8 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
+
 
 @Entity
 @Table(name = "orders_details")
@@ -26,11 +25,6 @@ public class OrderDetail implements Serializable {
 
     @Column(name = "quantity")
     private int quantity;
-
-    @OneToOne
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    //Не до конца понимаю почему он выдает что неверно смапирована product_id и требует insertable = false, updatable = false
-    private Product product;
 
 
     @Override

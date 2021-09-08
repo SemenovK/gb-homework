@@ -2,23 +2,24 @@ package gb.spring.homework5.common;
 
 import gb.spring.homework5.annotations.Company;
 import gb.spring.homework5.service.CompanyService;
-import lombok.extern.log4j.Log4j2;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-@Log4j2
+@Service
+@NoArgsConstructor
 public class CompanyValidator implements ConstraintValidator<Company, String> {
 
     private CompanyService companyService;
 
     @Autowired
-    public void setCompanyService(CompanyService companyService) {
+    public CompanyValidator(CompanyService companyService) {
         this.companyService = companyService;
+
     }
 
     @Override

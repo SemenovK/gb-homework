@@ -20,15 +20,12 @@ import java.math.BigInteger;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQueries({
-        @NamedQuery(name = "Product.getAll", query = "select p from Product p"),
-        @NamedQuery(name = "Product.getById", query = "select p from Product p where p.productId = :id")
-})
+
 public class Product {
     @Id
     @Column(name = "product_id")
-    @SequenceGenerator(name = "ProductIdGenerator", sequenceName = "\"Homework\".\"products_id_seq\"", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ProductIdGenerator")
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger productId;
 
     @Column(name = "title")

@@ -18,8 +18,8 @@
                 <td>Количество</td>
             </tr>
             <tr th:each="item : ${details}">
-                <td th:text="${item.product.title}">...</td>
-                <td th:text="${item.product.cost}">...</td>
+                <td th:text="${item.orderDetailID.product.title}">...</td>
+                <td th:text="${item.price_on_order_date}">...</td>
                 <td th:text="${item.quantity}">...</td>
             </tr>
         </table>

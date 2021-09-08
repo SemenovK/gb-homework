@@ -22,7 +22,7 @@
             <td th:text="${item.date}">...</td>
             <td>
                 <div th:each="detail : ${item.orderDetailList}">
-                    <span th:text="${detail.product.title}"></span>
+                    <span th:text="${detail.orderDetailID.product.title}"></span>
                     <span th:text="${detail.price_on_order_date}"></span>
                     <span th:text="${detail.quantity}"></span>
                 </div>

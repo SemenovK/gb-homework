@@ -25,9 +25,8 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    //Если я правильно понимаю то EAGER мы используем чтоб сразу как создаем обект заказа начитать внего все детали
-    //А Lazy будет пытаться подтягивать их по мере обращения
-    @OneToMany(fetch = FetchType.EAGER)
+
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private List<OrderDetail> orderDetailList;
 

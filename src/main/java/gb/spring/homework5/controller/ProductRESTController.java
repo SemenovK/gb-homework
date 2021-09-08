@@ -1,10 +1,8 @@
 package gb.spring.homework5.controller;
 
 import gb.spring.homework5.model.Product;
-import gb.spring.homework5.repository.OrdersRepository;
 import gb.spring.homework5.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
