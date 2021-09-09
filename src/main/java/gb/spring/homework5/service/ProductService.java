@@ -80,28 +80,28 @@ public class ProductService {
         return productRepository.findAll(specification,sort);
     }
 
-    public List<Product> getProductsWithPriceBetween(BigDecimal priceFrom, BigDecimal priceTo, Sort sort) {
-
-        if (priceFrom != null && priceTo != null) {
-            return productRepository.findProductByCostBetween(priceFrom, priceTo, sort);
-        } else if (priceFrom == null && priceTo != null) {
-            return productRepository.findProductByCostLessThan(priceTo, sort);
-        } else if (priceFrom != null && priceTo == null) {
-            return productRepository.findProductByCostGreaterThan(priceFrom, sort);
-        } else return getProductsList();
-
-    }
-
-    public Object getProductsWithPriceBetween(BigDecimal priceFrom, BigDecimal priceTo, String productTitle, JpaSort sort) {
-
-        if (priceFrom != null && priceTo != null) {
-            return productRepository.findProductByCostBetweenAndTitleContains(priceFrom, priceTo, productTitle, sort);
-        } else if (priceFrom == null && priceTo != null) {
-            return productRepository.findProductByCostLessThanAndTitleContains(priceTo, productTitle, sort);
-        } else if (priceFrom != null && priceTo == null) {
-            return productRepository.findProductByCostGreaterThanAndTitleContains(priceFrom, productTitle, sort);
-        } else return getProductsList();
-
-    }
+//    public List<Product> getProductsWithPriceBetween(BigDecimal priceFrom, BigDecimal priceTo, Sort sort) {
+//
+//        if (priceFrom != null && priceTo != null) {
+//            return productRepository.findProductByCostBetween(priceFrom, priceTo, sort);
+//        } else if (priceFrom == null && priceTo != null) {
+//            return productRepository.findProductByCostLessThan(priceTo, sort);
+//        } else if (priceFrom != null && priceTo == null) {
+//            return productRepository.findProductByCostGreaterThan(priceFrom, sort);
+//        } else return getProductsList();
+//
+//    }
+//
+//    public Object getProductsWithPriceBetween(BigDecimal priceFrom, BigDecimal priceTo, String productTitle, JpaSort sort) {
+//
+//        if (priceFrom != null && priceTo != null) {
+//            return productRepository.findProductByCostBetweenAndTitleContains(priceFrom, priceTo, productTitle, sort);
+//        } else if (priceFrom == null && priceTo != null) {
+//            return productRepository.findProductByCostLessThanAndTitleContains(priceTo, productTitle, sort);
+//        } else if (priceFrom != null && priceTo == null) {
+//            return productRepository.findProductByCostGreaterThanAndTitleContains(priceFrom, productTitle, sort);
+//        } else return getProductsList();
+//
+//    }
 
 }
