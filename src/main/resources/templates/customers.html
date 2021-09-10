@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+    <title>Homework 3</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0-1/css/bootstrap.min.css}"/>
+</head>
+<body>
+<script th:src="@{/webjars/bootstrap/4.6.0-1/js/bootstrap.bundle.min.js}"></script>
+<div>
+    <form method="post" th:action="@{/customers}" th:object="${customer}">
+        <div>
+            <label class="form-label">Имя покупателя</label>
+            <input type="text" class="form-control" id="name" name="name"/>
+        </div>
+        <div>
+            <button type="submit" class="btn-primary">Сохранить</button>
+        </div>
+    </form>
+</div>
+<h1>Покупатели</h1>
+<table th:border="1" class="table">
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>История заказов</th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr th:each="item : ${customer}">
+        <td th:text="${item.customerId}">...</td>
+        <td th:text="${item.name}">...</td>
+        <td><a href="#" th:href="'customers/history/'+${item.customerId}">Смотреть история заказов</a></td>
+        <td><a href="#" th:href="'order/create/'+${item.customerId}">Создать заказ</a></td>
+        <td><a href="#" th:href="'customers/delete/'+${item.customerId}">Удалить</a></td>
+    </tr>
+</table>
+<br>
+<form method="get" th:action="@{/product_byCustomerName}">
+    <div><label for="customerName">Продукты по имени пользователя</label><input type="text" name="name" id="customerName"></div>
+    <div><input type="submit"></div>
+</form>
+
+</div>
+</body>
+</html>
