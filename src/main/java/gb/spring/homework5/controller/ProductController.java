@@ -1,12 +1,15 @@
 package gb.spring.homework5.controller;
 
+import gb.spring.homework5.controller.filters.ProductFilter;
 import gb.spring.homework5.model.Product;
+import gb.spring.homework5.model.dto.ProductDto;
 import gb.spring.homework5.repository.specification.ProductSpecification;
 import gb.spring.homework5.service.CustomerService;
 import gb.spring.homework5.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +19,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping
 @RequiredArgsConstructor
 public class ProductController {
@@ -25,115 +29,51 @@ public class ProductController {
     private final ProductService productService;
     private final CustomerService customerService;
 
-    @GetMapping
-    public String showAllProducts(Model model) {
-        model.addAttribute("products", productService.getProductsList());
-        return "products";
+    @GetMapping("product")
+    public List<ProductDto> showAllProducts() {
+        return productService.getProductsList();
+
     }
 
-    @PostMapping("products")
-    public String showAllFilteredAndSortedProducts(@RequestParam(required = false) BigDecimal priceFrom,
-                                                   @RequestParam(required = false) BigDecimal priceTo,
-                                                   @RequestParam(required = false) String productTitle,
-                                                   @RequestParam(required = false) String sortById,
-                                                   @RequestParam(required = false) String sortByTitle,
-                                                   @RequestParam(required = false) String sortByCost,
-                                                   @RequestParam(required = false) String sortByProducer,
-                                                   Model model) {
+    @PostMapping("productFilter")
+    public List<ProductDto> showFilteredProducts(@RequestBody ProductFilter productFilter) {
 
+        System.out.println(productFilter);
         List<String> sortFields = new ArrayList<>();
-        if (sortById != null)
-            sortFields.add("productId");
-        if (sortByTitle != null)
-            sortFields.add("title");
-        if (sortByCost != null)
-            sortFields.add("cost");
-        if (sortByProducer != null)
-            sortFields.add("producer");
+        if (productFilter.getSort() != null) {
+            if (productFilter.getSort().containsKey("byID"))
+                if (productFilter.getSort().get("byID") == true)
+                    sortFields.add("productId");
+            if (productFilter.getSort().containsKey("byName"))
+                if (productFilter.getSort().get("byName") == true)
+                    sortFields.add("title");
+            if (productFilter.getSort().containsKey("byPrice"))
+                if (productFilter.getSort().get("byPrice") == true)
+                    sortFields.add("cost");
+            if (productFilter.getSort().containsKey("byProducer"))
+                if (productFilter.getSort().get("byProducer") == true)
+                    sortFields.add("producer");
 
-        if (sortFields.isEmpty()) {
-            sortFields.add("productId");
         }
-        System.out.println(sortFields);
+
+        if(sortFields.isEmpty())
+            sortFields.add("productId");
+
         JpaSort sort = JpaSort.unsafe(Sort.Direction.ASC, sortFields);
 
-        model.addAttribute("products", productService.getProductsWithSpecification(ProductSpecification.getByPriceAndTitle(priceFrom, priceTo, productTitle), sort));
+        return productService.getProductsWithSpecification(ProductSpecification.getByPriceAndTitle(productFilter.getPriceFrom(), productFilter.getPriceTo(), productFilter.getTitle()), sort);
 
-        //Заметка для памяти. Если вдруг готов буду идти сложным и походу неправильным путем
-        //
-//       if(productTitle==null||productTitle.trim().equals("")){
-//            model.addAttribute("products", productService.getProductsWithPriceBetween(priceFrom, priceTo, sort));
-//        } else {
-//            //model.addAttribute("products", productService.getProductsWithPriceBetween(priceFrom, priceTo, productTitle, sort));
-//            model.addAttribute("products", productService.getProductsWithSpecification(ProductSpecification.getByTitle(productTitle), sort));
-//
-//        }
-
-
-        model.addAttribute("priceFrom", priceFrom);
-        model.addAttribute("priceTo", priceTo);
-        model.addAttribute("productTitle", productTitle);
-        model.addAttribute("sortById", sortById == null ? null : "on");
-        model.addAttribute("sortByTitle", sortByTitle == null ? null : "on");
-        model.addAttribute("sortByCost", sortByCost == null ? null : "on");
-        model.addAttribute("sortByProducer", sortByProducer == null ? null : "on");
-
-
-        return "products";
     }
 
-    @GetMapping("{id}")
-    public String findProduct(@PathVariable BigInteger id, Model model) {
-        model.addAttribute("products", productService.getProduct(id));
-        return "products";
+    @PostMapping("product")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void saveProduct(@RequestBody @Valid ProductDto productDto) {
+        productService.addProduct(productDto);
     }
 
-    @GetMapping("product_add")
-    public String addProduct(Model model) {
-        model.addAttribute("mode", "Добавить продукт");
-        model.addAttribute("product");
-        return "productAddForm";
-    }
-
-    @PostMapping("product_add")
-    public String saveProduct(@ModelAttribute @Valid Product product) {
-        productService.addProduct(product);
-        return "redirect:/";
-    }
-
-    @GetMapping("product_edit/{id}")
-    public String editProduct(@PathVariable BigInteger id, Model model) {
-        model.addAttribute("mode", "Редактировать продукт");
-        model.addAttribute("product", productService.getProduct(id));
-        return "productEditForm";
-    }
-
-    @PostMapping("product_edit")
-    public String editProduct(@ModelAttribute @Valid Product product) {
-        productService.replaceProduct(product);
-        return "redirect:/";
-    }
-
-    @GetMapping("product_delete/{id}")
-    public String deleteProduct(@PathVariable BigInteger id) {
+    @DeleteMapping("product/{id}")
+    public void deleteProduct(@PathVariable BigInteger id) {
         productService.deleteProduct(id);
-        return "redirect:/";
     }
 
-    @GetMapping("product_byCustomerId/{id}")
-    public String showProductsByCustomerId(@PathVariable BigInteger id, Model model) {
-        model.addAttribute("customer", customerService.getCustomer(id));
-        model.addAttribute("products", productService.getProductsListByCustomerId(id));
-
-        return "products";
-    }
-
-    @GetMapping("product_byCustomerName")
-    public String showProductsByCustomerId(@RequestParam(name = "name") String customerName,
-                                           Model model) {
-        model.addAttribute("customer", customerService.getCustomer(customerName).orElse(null));
-        model.addAttribute("products", productService.getProductsListByCustomerName(customerName));
-        return "products";
-
-    }
 }

@@ -4,6 +4,7 @@ import gb.spring.homework5.model.Customer;
 import gb.spring.homework5.model.Order;
 import gb.spring.homework5.model.OrderDetail;
 import gb.spring.homework5.model.Product;
+import gb.spring.homework5.model.dto.ProductDto;
 import gb.spring.homework5.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.criterion.Example;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,16 +30,18 @@ public class ProductService {
     private final CustomerService customerService;
     private final OrdersService ordersService;
 
-    public List<Product> getProductsList() {
-        return productRepository.findAll();
+    public List<ProductDto> getProductsList() {
+        return productRepository.findAll().stream()
+                .map(ProductDto::valueOf)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Product getProduct(BigInteger id) {
         return productRepository.getById(id);
     }
 
-    public void addProduct(Product product) {
-        productRepository.save(product);
+    public void addProduct(ProductDto productDto) {
+        productRepository.save(productDto.toProduct());
     }
 
     public void replaceProduct(Product product) {
@@ -76,32 +80,15 @@ public class ProductService {
         return null;
     }
 
-    public List<Product> getProductsWithSpecification(Specification specification, Sort sort){
-        return productRepository.findAll(specification,sort);
-    }
+    public List<ProductDto> getProductsWithSpecification(Specification specification, Sort sort){
+        List<Product> list = productRepository.findAll(specification, sort);
+        //здесь почемуто не получалось череч Стимы отконвертить
+        List<ProductDto> productDtoList = new ArrayList<>();
+        for (Product product : list) {
+            productDtoList.add(ProductDto.valueOf(product));
+        }
 
-//    public List<Product> getProductsWithPriceBetween(BigDecimal priceFrom, BigDecimal priceTo, Sort sort) {
-//
-//        if (priceFrom != null && priceTo != null) {
-//            return productRepository.findProductByCostBetween(priceFrom, priceTo, sort);
-//        } else if (priceFrom == null && priceTo != null) {
-//            return productRepository.findProductByCostLessThan(priceTo, sort);
-//        } else if (priceFrom != null && priceTo == null) {
-//            return productRepository.findProductByCostGreaterThan(priceFrom, sort);
-//        } else return getProductsList();
-//
-//    }
-//
-//    public Object getProductsWithPriceBetween(BigDecimal priceFrom, BigDecimal priceTo, String productTitle, JpaSort sort) {
-//
-//        if (priceFrom != null && priceTo != null) {
-//            return productRepository.findProductByCostBetweenAndTitleContains(priceFrom, priceTo, productTitle, sort);
-//        } else if (priceFrom == null && priceTo != null) {
-//            return productRepository.findProductByCostLessThanAndTitleContains(priceTo, productTitle, sort);
-//        } else if (priceFrom != null && priceTo == null) {
-//            return productRepository.findProductByCostGreaterThanAndTitleContains(priceFrom, productTitle, sort);
-//        } else return getProductsList();
-//
-//    }
+        return productDtoList;
+    }
 
 }
