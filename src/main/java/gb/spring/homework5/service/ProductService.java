@@ -4,7 +4,11 @@ import gb.spring.homework5.model.Customer;
 import gb.spring.homework5.model.Order;
 import gb.spring.homework5.model.OrderDetail;
 import gb.spring.homework5.model.Product;
+import gb.spring.homework5.model.dto.CustomerDto;
+import gb.spring.homework5.model.dto.OrderDetailDto;
+import gb.spring.homework5.model.dto.OrderDto;
 import gb.spring.homework5.model.dto.ProductDto;
+import gb.spring.homework5.repository.OrderDetailsRepository;
 import gb.spring.homework5.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.criterion.Example;
@@ -36,12 +40,13 @@ public class ProductService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public Product getProduct(BigInteger id) {
-        return productRepository.getById(id);
+    public ProductDto getProduct(BigInteger id) {
+        return ProductDto.valueOf(productRepository.getById(id));
     }
 
-    public void addProduct(ProductDto productDto) {
+    public ProductDto addProduct(ProductDto productDto) {
         productRepository.save(productDto.toProduct());
+        return productDto;
     }
 
     public void replaceProduct(Product product) {
@@ -58,23 +63,25 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public Set<Product> getProductsListByCustomerId(BigInteger id) {
-        Set<Product> productSet = new CopyOnWriteArraySet<>();
-        List<Order> orderList = ordersService.getCustomerOrders(id);
+    public Set<ProductDto> getProductsListByCustomerId(BigInteger id) {
+        Set<ProductDto> productSet = new CopyOnWriteArraySet<>();
+        List<OrderDto> orderList = ordersService.getCustomerOrders(id);
 
-        for (Order order : orderList) {
-            for (OrderDetail orderDetail : order.getOrderDetailList()) {
-                productSet.add(orderDetail.getOrderDetailID().getProduct());
+        for (OrderDto orderDto : orderList) {
+            List<OrderDetailDto> orderDetailDto = ordersService.getOrderDetailByOrder(orderDto);
+            for (OrderDetailDto detailDto : orderDetailDto) {
+                productSet.add(detailDto.getProductDto());
+
             }
         }
         return productSet;
     }
 
-    public Set<Product> getProductsListByCustomerName(String customerName) {
-        Optional<Customer> customer = customerService.getCustomer(customerName);
+    public Set<ProductDto> getProductsListByCustomerName(String customerName) {
+        Optional<CustomerDto> customer = customerService.getCustomer(customerName);
 
         if (customer.isPresent()) {
-            return getProductsListByCustomerId(customer.get().getCustomerId());
+            return getProductsListByCustomerId(customer.get().getId());
         }
 
         return null;

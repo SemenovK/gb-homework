@@ -1,8 +1,12 @@
 package gb.spring.homework5.controller;
 
 import gb.spring.homework5.model.Customer;
+import gb.spring.homework5.model.dto.CustomerDto;
+import gb.spring.homework5.model.dto.OrderDto;
 import gb.spring.homework5.service.CustomerService;
 import gb.spring.homework5.service.OrdersService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigInteger;
+import java.util.List;
 
-@Controller
-@RequestMapping("/customers")
+
+@Api("Покупатели")
+@RestController
+@RequestMapping("api/v1/customers")
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -20,32 +27,35 @@ public class CustomerController {
     private final OrdersService ordersService;
 
     @GetMapping
-    public String getAllCustomers(Model model){
-        model.addAttribute("customer",customerService.getCustomers());
-        return "customers";
+    @ApiOperation("Получение списка всех покупателей")
+    public List<CustomerDto> getAllCustomers(){
+        return customerService.getCustomers();
+
     }
     @GetMapping("{id}")
-    public String getAllCustomers(@PathVariable BigInteger id, Model model){
-        model.addAttribute("customer",customerService.getCustomer(id));
-        return "customers";
+    @ApiOperation("Получение покупателя по ID")
+    public CustomerDto getCustomer(@PathVariable BigInteger id){
+        return customerService.getCustomer(id);
     }
 
     @PostMapping
-    public String addCustomer(@ModelAttribute @Valid Customer customer){
-        customerService.addCustomer(customer);
-        return "redirect:/customers";
+    @ApiOperation("Добавление покупателя")
+    public CustomerDto addCustomer(@ModelAttribute @Valid Customer customer){
+        return customerService.addCustomer(customer);
     }
-    @GetMapping("delete/{id}")
-    public String deleteCustomer(@PathVariable BigInteger id, Model model){
+
+    @DeleteMapping("{id}")
+    @ApiOperation("Удаление покупателя")
+    public void deleteCustomer(@PathVariable BigInteger id){
         customerService.deleteCustomer(id);
-        return "redirect:/customers";
     }
 
     @GetMapping("history/{customerId}")
-    public String showOrders(@PathVariable BigInteger customerId, Model model){
-        model.addAttribute("customer",customerService.getCustomer(customerId));
-        model.addAttribute("order",ordersService.getCustomerOrders(customerId));
-        return "orders";
+    @ApiOperation("История заказов покупателя")
+    public List<OrderDto> showOrders(@PathVariable BigInteger customerId){
+        List<OrderDto> orderDtoList = ordersService.getCustomerOrders(customerId);
+
+        return orderDtoList;
     }
 
 }

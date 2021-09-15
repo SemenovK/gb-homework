@@ -1,8 +1,14 @@
 package gb.spring.homework5.controller;
 
 import gb.spring.homework5.model.*;
+import gb.spring.homework5.model.dto.OrderDetailDto;
+import gb.spring.homework5.model.dto.OrderDto;
+import gb.spring.homework5.model.dto.ProductDto;
+import gb.spring.homework5.service.CustomerService;
 import gb.spring.homework5.service.OrdersService;
 import gb.spring.homework5.service.ProductService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -10,62 +16,46 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 @Log4j2
-@Controller
-@RequestMapping("/order")
+@RestController
+@Api("Заказы")
+@RequestMapping("api/v1/order")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrdersService ordersService;
     private final ProductService productService;
+    private final CustomerService customerService;
 
 
-    @GetMapping("create/{customerId}")
-    public String addOrder(@PathVariable BigInteger customerId, Model model) {
+    @GetMapping
+    @ApiOperation("Получение списка всех заказов")
+    public List<OrderDto> getOrders() {
+        return ordersService.getOrders();
 
-        Order order = ordersService.prepareOrderForCustomer(customerId);
-
-        model.addAttribute("path", "/order/create/" + customerId);
-        model.addAttribute("order", order);
-        model.addAttribute("details", order.getOrderDetailList());
-        model.addAttribute("products", productService.getProductsList());
-
-        return "ordersAdd";
     }
 
-    @PostMapping("create/{customerId}")
-    public String addOrderDetail(@PathVariable BigInteger customerId,
-                                 @RequestParam BigInteger product_id,
-                                 @RequestParam Integer quantity,
-                                 Model model) {
+    @PostMapping("{customerId}")
+    @ApiOperation("Добавление заказа")
+    public OrderDto addOrder(@PathVariable BigInteger customerId) {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setCustomerDto(customerService.getCustomer(customerId));
+        orderDto.setDate(new Date());
+        orderDto.setOrderDetailList(new CopyOnWriteArrayList<>());
+        System.out.println(orderDto);
+        return ordersService.addOrder(orderDto);
 
-        Order order = ordersService.getPreparedOrderForCustomer(customerId);
-        if (order != null) {
-            OrderDetailID orderDetailID = new OrderDetailID();
-            Product product = productService.getProduct(product_id);
-            orderDetailID.setProduct(product);
-            orderDetailID.setOrder(order);
-            OrderDetail orderDetail = new OrderDetail(orderDetailID, product.getCost(), quantity);
-            order.getOrderDetailList().add(orderDetail);
-
-        }
-        model.addAttribute("order", order);
-        model.addAttribute("details", order.getOrderDetailList());
-        model.addAttribute("path", "/order/create/" + customerId);
-        model.addAttribute("products", productService.getProductsList());
-
-        return "ordersAdd";
     }
 
-    @PostMapping("create/{customerId}/save")
-    public String savePreparedOrder(@PathVariable BigInteger customerId,
-                                    Model model) {
-        Order order = ordersService.getPreparedOrderForCustomer(customerId);
-        if (order != null) {
-            ordersService.addOrder(order);
-        }
+    @DeleteMapping
+    @ApiOperation("Удаление заказа с добавленными в него товарами")
+    public void deleteOrder(@PathVariable BigInteger orderId) {
+        ordersService.deleteOrder(ordersService.getOrder(orderId));
 
-        return "redirect:/customers/history/" + customerId;
     }
 }

@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" id="myModalLabel">Товары</h4>
 </div>
-<form novalidate ng-submit="saveProduct(selected)">
+<form>
 <div class="modal-body">
   <div class="panel panel-default">
     <div class="panel-body">
@@ -16,7 +16,10 @@
         </div>
         <div class="form-group col-md-6">
           <label>Производитель</label>
-          <input class="form-control" type="text" ng-model="selected.producer">
+            <select class="combobox form-control" ng-model="selected.producer" >
+                <option></option>
+                <option ng-repeat="item in Companies"   value="{{item.title}}" >{{item.title}}</option>
+            </select>
         </div>
 
 
@@ -24,6 +27,6 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="submit" class="btn btn-success" ng-click="submit()">Save</button>
+  <button type="submit" ng-click="saveProduct(selected)" class="btn btn-success">Save</button>
   <button class="btn btn-default" ng-click="cancel()">Cancel</button>
 </div>      </form>

@@ -6,6 +6,10 @@ import gb.spring.homework5.model.dto.ProductDto;
 import gb.spring.homework5.repository.specification.ProductSpecification;
 import gb.spring.homework5.service.CustomerService;
 import gb.spring.homework5.service.ProductService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
@@ -21,21 +25,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api("Продукты")
 @RestController
-@RequestMapping
+@RequestMapping("api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
     private final CustomerService customerService;
 
-    @GetMapping("product")
+    @GetMapping
+    @ApiOperation("Получение списка всех продуктов")
     public List<ProductDto> showAllProducts() {
         return productService.getProductsList();
 
     }
 
-    @PostMapping("productFilter")
+    @PostMapping("filter")
+    @ApiOperation("Получение списка всех продуктов с применением фильтра")
     public List<ProductDto> showFilteredProducts(@RequestBody ProductFilter productFilter) {
 
         System.out.println(productFilter);
@@ -56,7 +63,7 @@ public class ProductController {
 
         }
 
-        if(sortFields.isEmpty())
+        if (sortFields.isEmpty())
             sortFields.add("productId");
 
         JpaSort sort = JpaSort.unsafe(Sort.Direction.ASC, sortFields);
@@ -65,13 +72,16 @@ public class ProductController {
 
     }
 
-    @PostMapping("product")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveProduct(@RequestBody @Valid ProductDto productDto) {
-        productService.addProduct(productDto);
+    @ApiOperation("Сохранение продукта")
+    public ProductDto saveProduct(@RequestBody @Valid ProductDto productDto) {
+
+        return productService.addProduct(productDto);
     }
 
-    @DeleteMapping("product/{id}")
+    @ApiOperation("Удаление продукта")
+    @DeleteMapping("{id}")
     public void deleteProduct(@PathVariable BigInteger id) {
         productService.deleteProduct(id);
     }

@@ -5,7 +5,7 @@ mainApp.controller('TableFilterController', function($scope, $uibModal, $http, $
 
     var parent = this;
     parent.fillTable = function () {
-        $http.get(contextPath + "product")
+        $http.get(contextPath + "api/v1/products")
             .then(function (resp) {
                 $scope.Products = resp.data
             })
@@ -19,20 +19,25 @@ mainApp.controller('TableFilterController', function($scope, $uibModal, $http, $
             windowClass: 'modal',
             controller: function($scope, $uibModalInstance, $log) {
                 $scope.selected = p;
-                $scope.submit = function() {
-                    saveProduct(p)
-                    return
 
-                }
                 $scope.cancel = function() {
                     $uibModalInstance.close('Dismissed');
                 };
 
                 $scope.saveProduct = function (p) {
-                    $http.post(contextPath + 'product', p)
-                        .then($uibModalInstance.close('Запись добавлена!'))
-
+                    if(p!== undefined && p!== null)
+                    $http.post(contextPath + 'api/v1/products', p)
+                        .then($uibModalInstance.close('Запись добавлена!')
+                        )
                 }
+                $scope.getCompanies = function(){
+                    $http.get(contextPath + 'company')
+                        .then(function (resp) {
+                            $scope.Companies = resp.data
+                        })
+                }
+                $scope.getCompanies()
+
             },
             resolve: {
                 object: function() {
@@ -41,27 +46,21 @@ mainApp.controller('TableFilterController', function($scope, $uibModal, $http, $
             }
 
         }).result.then(function (some){
-            alert("reload")
             parent.fillTable()
         });
     };
 
-    $scope.isSelected = function(p) {
-        return $scope.selected === p;
-    }
-
-
 
 
     $scope.removeProduct = function (id) {
-        $http.delete(contextPath + 'product/' + id)
+        $http.delete(contextPath + 'api/v1/products/' + id)
             .then(function (resp) {
                 parent.fillTable()
             })
     }
 
     $scope.filterProduct = function(filterModel){
-        $http.post(contextPath + 'productFilter/', filterModel)
+        $http.post(contextPath + 'api/v1/products/filter', filterModel)
             .then(function (resp) {
                 $scope.Products = resp.data
             })
