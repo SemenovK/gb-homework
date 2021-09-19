@@ -41,12 +41,14 @@ public class ProductService {
     }
 
     public ProductDto getProduct(BigInteger id) {
-        return ProductDto.valueOf(productRepository.getById(id));
+        Product product = productRepository.getById(id);
+        return ProductDto.valueOf(product);
     }
 
     public ProductDto addProduct(ProductDto productDto) {
-        productRepository.save(productDto.toProduct());
-        return productDto;
+        Product product = productDto.toProduct();
+        productRepository.save(product);
+        return ProductDto.valueOf(product);
     }
 
     public void replaceProduct(Product product) {

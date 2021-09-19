@@ -31,7 +31,7 @@ mainApp.controller('TableFilterController', function($scope, $uibModal, $http, $
                         )
                 }
                 $scope.getCompanies = function(){
-                    $http.get(contextPath + 'company')
+                    $http.get(contextPath + 'api/v1/company')
                         .then(function (resp) {
                             $scope.Companies = resp.data
                         })

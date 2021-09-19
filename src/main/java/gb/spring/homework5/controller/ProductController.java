@@ -41,11 +41,17 @@ public class ProductController {
 
     }
 
+    @GetMapping("{id}")
+    @ApiOperation("Получение списка всех продуктов")
+    public ProductDto showAllProducts(@PathVariable BigInteger id) {
+        return productService.getProduct(id);
+
+    }
+
     @PostMapping("filter")
     @ApiOperation("Получение списка всех продуктов с применением фильтра")
     public List<ProductDto> showFilteredProducts(@RequestBody ProductFilter productFilter) {
 
-        System.out.println(productFilter);
         List<String> sortFields = new ArrayList<>();
         if (productFilter.getSort() != null) {
             if (productFilter.getSort().containsKey("byID"))

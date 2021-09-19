@@ -3,6 +3,7 @@ package gb.spring.homework5.model.dto;
 import gb.spring.homework5.model.Customer;
 import gb.spring.homework5.model.Order;
 import gb.spring.homework5.model.Product;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "Покупатель", description = "DTO Покупатель")
 public class CustomerDto {
 
     private BigInteger id;

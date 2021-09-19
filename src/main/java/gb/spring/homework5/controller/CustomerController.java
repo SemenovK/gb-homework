@@ -40,8 +40,8 @@ public class CustomerController {
 
     @PostMapping
     @ApiOperation("Добавление покупателя")
-    public CustomerDto addCustomer(@ModelAttribute @Valid Customer customer){
-        return customerService.addCustomer(customer);
+    public CustomerDto addCustomer(@RequestBody @Valid CustomerDto customerDto){
+        return customerService.addCustomer(customerDto);
     }
 
     @DeleteMapping("{id}")

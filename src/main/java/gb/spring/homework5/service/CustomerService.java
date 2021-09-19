@@ -5,6 +5,7 @@ import gb.spring.homework5.model.Customer;
 import gb.spring.homework5.model.dto.CustomerDto;
 import gb.spring.homework5.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    public CustomerDto addCustomer(Customer customer) {
-        customerRepository.save(customer);
+    public CustomerDto addCustomer(CustomerDto customerDto) {
+        Customer customer = customerRepository.save(customerDto.toCustomer());
         return CustomerDto.valueOf(customer);
     }
 

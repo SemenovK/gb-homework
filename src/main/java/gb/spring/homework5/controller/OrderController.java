@@ -46,13 +46,11 @@ public class OrderController {
         OrderDto orderDto = new OrderDto();
         orderDto.setCustomerDto(customerService.getCustomer(customerId));
         orderDto.setDate(new Date());
-        orderDto.setOrderDetailList(new CopyOnWriteArrayList<>());
-        System.out.println(orderDto);
         return ordersService.addOrder(orderDto);
 
     }
 
-    @DeleteMapping
+    @DeleteMapping("{orderId}")
     @ApiOperation("Удаление заказа с добавленными в него товарами")
     public void deleteOrder(@PathVariable BigInteger orderId) {
         ordersService.deleteOrder(ordersService.getOrder(orderId));

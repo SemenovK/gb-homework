@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name="order")
 @Table(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,11 +24,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
-    private List<OrderDetail> orderDetailList;
 
     @Override
     public String toString() {

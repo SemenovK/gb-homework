@@ -2,6 +2,7 @@ package gb.spring.homework5.model.dto;
 
 import gb.spring.homework5.annotations.Company;
 import gb.spring.homework5.model.Product;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ApiModel(value = "Продукт", description = "DTO Продукт")
 public class ProductDto {
 
     private BigInteger id;

@@ -55,7 +55,8 @@ public class OrdersService {
     }
 
     public void deleteOrder(OrderDto orderDto) {
-        orderDetailsRepository.deleteOrderDetailsByOrderDetailID_Order(orderDto.toOrder());
+        List<OrderDetail> orderDetailList = orderDetailsRepository.findOrderDetailsByOrderDetailID_Order(orderDto.toOrder());
+        orderDetailsRepository.deleteAll(orderDetailList);
         orderRepository.delete(orderDto.toOrder());
     }
 

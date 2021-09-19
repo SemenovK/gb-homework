@@ -3,6 +3,7 @@ package gb.spring.homework5.model.dto;
 import gb.spring.homework5.model.Order;
 import gb.spring.homework5.model.OrderDetail;
 import gb.spring.homework5.model.OrderDetailID;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ApiModel(value = "Детали заказа", description = "DTO детали заказа")
 public class OrderDetailDto {
     ProductDto productDto;
     BigDecimal price;
