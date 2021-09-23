@@ -66,6 +66,35 @@ mainApp.controller('TableFilterController', function($scope, $uibModal, $http, $
             })
     }
 
+    $scope.addToCart = function (product){
+        $http.post(contextPath+'api/v1/cart', product)
+            .then(function (resp){
+                parent.showCart()
+            })
+    }
+
+    $scope.deleteFromCart = function (product){
+        $http.post(contextPath+'api/v1/cart/delete', product)
+            .then(function (resp){
+                parent.showCart()
+            })
+    }
+
+    parent.showCart = function () {
+        $http.get(contextPath + "api/v1/cart")
+            .then(function (resp) {
+                $scope.CartItems = resp.data
+            })
+    }
+
+    $scope.orderCart = function () {
+        $http.post(contextPath + "api/v1/cart/order")
+            .then(function (resp) {
+                $scope.CartItems = resp.data
+            })
+    }
+    $scope.CartItems = parent.showCart()
+
     $scope.Products = parent.fillTable()
 })
 

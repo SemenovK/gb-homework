@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,4 +41,16 @@ public class OrderDetailDto {
         return orderDetail;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderDetailDto that = (OrderDetailDto) o;
+        return productDto.equals(that.productDto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productDto);
+    }
 }

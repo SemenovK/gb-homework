@@ -17,6 +17,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,5 +47,18 @@ public class ProductDto {
         product.setCost(this.price);
         product.setProducer(this.producer);
         return product;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductDto that = (ProductDto) o;
+        return id.equals(that.id) && title.equals(that.title) && price.equals(that.price) && producer.equals(that.producer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, price, producer);
     }
 }

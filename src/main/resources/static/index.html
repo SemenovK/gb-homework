@@ -17,6 +17,32 @@
 
 <div class="container" ng-controller="TableFilterController">
     <h1>Продукты</h1>
+    <div>
+        <h3>Состав заказа:</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Продукт</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in CartItems">
+                <td>{{item.productDto.title}}</td>
+                <td>{{item.price}}</td>
+                <td>{{item.quantity}}</td>
+                <td>
+                    <button class="btn-danger" ng-click="deleteFromCart(item.productDto)">X</button>
+                </td>
+            </tr>
+            <tr>
+            <td colspan="3">  <button ng-click="orderCart()" class="btn btn-success">Заказать</button></td>
+            <tr>
+            </tbody>
+        </table>
+    </div>
     <br>
     <div>
         <form novalidate ng-submit="filterProduct(filterModel)">
@@ -32,11 +58,12 @@
                 <label class="btn btn-primary" ng-model="filterModel.sort.byID" uib-btn-checkbox>ID</label>
                 <label class="btn btn-primary" ng-model="filterModel.sort.byName" uib-btn-checkbox>Названию</label>
                 <label class="btn btn-primary" ng-model="filterModel.sort.byPrice" uib-btn-checkbox>Цене</label>
-                <label class="btn btn-primary" ng-model="filterModel.sort.byProducer" uib-btn-checkbox>Производителю</label>
+                <label class="btn btn-primary" ng-model="filterModel.sort.byProducer"
+                       uib-btn-checkbox>Производителю</label>
             </div>
             <div>
                 <br>
-            <button type="submit" class="btn btn-success">Фильтровать</button>
+                <button type="submit" class="btn btn-success">Фильтровать</button>
             </div>
         </form>
     </div>
@@ -47,6 +74,7 @@
             <th>Имя</th>
             <th>Цена</th>
             <th>Производитель</th>
+            <th></th>
             <th></th>
             <th></th>
         </tr>
@@ -60,6 +88,9 @@
             <td>{{p.producer}}</td>
             <td>
                 <button class="btn btn-info" ng-click="showProduct(p)">Open</button>
+            </td>
+            <td>
+                <button class="btn" ng-click="addToCart(p)">В заказ</button>
             </td>
             <td>
                 <button class="btn-danger" ng-click="removeProduct(p.id)">Удалить</button>
